@@ -204,7 +204,7 @@ const STUDY_DATA = {
             "Unicode vs UTF: Unicode assigns numbers (code points) to characters; UTF (Unicode Transformation Format) specifies how those numbers are stored as raw bytes in memory/disk.",
             "Byte lengths vary: ASCII characters take 1 byte; others take 2, 3, or 4 bytes."
           ],
-          code: "print(len('A'.encode('utf-8')))    # 1 byte  (ASCII)\nprint(len('é'.encode('utf-8')))    # 2 bytes (Latin)\nprint(len('文'.encode('utf-8')))   # 3 bytes (CJK BMP)\nprint(len('🐍'.encode('utf-8')))   # 4 bytes (Emoji)"
+          code: "print(len('A'.encode('utf-8')))    # 1 byte  (ASCII)\nprint(len('é'.encode('utf-8')))    # 2 bytes (Latin)\nprint(len('文'.encode('utf-8')))   # 3 bytes (CJK BMP)\nprint(len('\\U0001F600'.encode('utf-8'))) # 4 bytes (Supplementary Plane)"
         },
         {
           id: "7c-2",

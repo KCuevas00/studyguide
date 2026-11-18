@@ -1,17 +1,17 @@
-// Python Exam #2 Cram Guide - Core Interactive Logic
+// Python Exam 2 Study Guide - Interactive Logic
+// Minimalist monochrome interface
 
 document.addEventListener('DOMContentLoaded', () => {
-  // State
   let currentTab = 'tab-learn';
   let tooltipsEnabled = true;
   let flashcardList = [];
   let currentCardIndex = 0;
   let cardFlipped = false;
-  let cardMastery = {}; // { id: 'mastered' | 'review' }
+  let cardMastery = {};
   let quizAnswers = {};
   let currentFilter = 'all';
 
-  // Flatten all items for flashcards & quick lookup
+  // Flatten all items
   const allItems = [];
   const itemsById = {};
   STUDY_DATA.sections.forEach(sec => {
@@ -26,8 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // DOM Elements
   const themeToggle = document.getElementById('theme-toggle');
-  const themeIcon = document.getElementById('theme-icon');
-  const themeText = document.getElementById('theme-text');
   const globalSearch = document.getElementById('global-search');
   const searchClear = document.getElementById('search-clear');
   const tabButtons = document.querySelectorAll('.tab-btn');
@@ -35,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const learnContainer = document.getElementById('learn-content-container');
   const sectionNav = document.getElementById('section-nav');
   const cursorTooltip = document.getElementById('cursor-tooltip');
-  const ttBadge = document.getElementById('tt-badge');
+  const ttTopic = document.getElementById('tt-topic');
   const ttShort = document.getElementById('tt-short');
   const ttCode = document.getElementById('tt-code');
   const btnToggleTooltips = document.getElementById('btn-toggle-tooltips');
@@ -43,9 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCollapseAll = document.getElementById('btn-collapse-all');
   const resultsCountText = document.getElementById('results-count-text');
 
-  // =========================================================================
   // Theme Toggle
-  // =========================================================================
   const savedTheme = localStorage.getItem('studyguide-theme') || 'dark';
   applyTheme(savedTheme);
 
@@ -58,18 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('studyguide-theme', theme);
-    if (theme === 'light') {
-      themeIcon.textContent = '🌙';
-      themeText.textContent = 'Dark';
-    } else {
-      themeIcon.textContent = '☀️';
-      themeText.textContent = 'Light';
-    }
   }
 
-  // =========================================================================
   // Tabs Navigation
-  // =========================================================================
   tabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const targetTab = btn.getAttribute('data-tab');
@@ -87,60 +74,55 @@ document.addEventListener('DOMContentLoaded', () => {
     tabPanels.forEach(p => {
       p.classList.toggle('active', p.id === tabId);
     });
-    // Hide tooltip on tab change
     hideTooltip();
     window.location.hash = tabId.replace('tab-', '');
   }
 
-  // Check URL hash on load
   const hash = window.location.hash.replace('#', '');
   if (hash && document.getElementById(`tab-${hash}`)) {
     switchTab(`tab-${hash}`);
   }
 
-  // =========================================================================
   // Render Learn Section
-  // =========================================================================
   function renderLearnSections() {
     learnContainer.innerHTML = '';
     sectionNav.innerHTML = '';
 
-    // "All" Nav Pill
-    const allPill = document.createElement('a');
-    allPill.className = 'nav-pill active';
-    allPill.textContent = 'All Topics';
-    allPill.addEventListener('click', (e) => {
+    // "All Topics" Link
+    const allLink = document.createElement('a');
+    allLink.className = 'nav-link-btn active';
+    allLink.textContent = 'All Topics';
+    allLink.addEventListener('click', (e) => {
       e.preventDefault();
-      document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
-      allPill.classList.add('active');
+      document.querySelectorAll('.nav-link-btn').forEach(p => p.classList.remove('active'));
+      allLink.classList.add('active');
       document.querySelectorAll('.study-section').forEach(s => s.style.display = 'block');
       window.scrollTo({ top: 120, behavior: 'smooth' });
     });
-    sectionNav.appendChild(allPill);
+    sectionNav.appendChild(allLink);
 
     STUDY_DATA.sections.forEach(sec => {
-      // Build Quick Nav Pill
-      const pill = document.createElement('a');
-      pill.className = 'nav-pill';
-      pill.textContent = sec.title.split('.')[0] + '.' + sec.title.split('.')[1];
-      pill.title = sec.title;
-      pill.addEventListener('click', (e) => {
+      // Quick Jump Link
+      const link = document.createElement('a');
+      link.className = 'nav-link-btn';
+      link.textContent = sec.title.split('.')[0] + '.' + (sec.title.split('.')[1] || '');
+      link.title = sec.title;
+      link.addEventListener('click', (e) => {
         e.preventDefault();
         const targetEl = document.getElementById(`sec-${sec.id}`);
         if (targetEl) {
           targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
-          pill.classList.add('active');
+          document.querySelectorAll('.nav-link-btn').forEach(p => p.classList.remove('active'));
+          link.classList.add('active');
         }
       });
-      sectionNav.appendChild(pill);
+      sectionNav.appendChild(link);
 
-      // Section Wrapper
+      // Section
       const sectionEl = document.createElement('div');
       sectionEl.className = 'study-section';
       sectionEl.id = `sec-${sec.id}`;
 
-      // Section Header
       const headerEl = document.createElement('div');
       headerEl.className = 'section-header';
       headerEl.innerHTML = `
@@ -148,11 +130,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="section-title">${sec.title}</div>
           <div class="section-desc">${sec.desc}</div>
         </div>
-        <span class="cram-pill">${sec.items.length} questions</span>
+        <span class="section-count">${sec.items.length} items</span>
       `;
       sectionEl.appendChild(headerEl);
 
-      // Question List
       const qListEl = document.createElement('div');
       qListEl.className = 'question-list';
 
@@ -165,8 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
       learnContainer.appendChild(sectionEl);
     });
 
-    // Also populate eval code list in tab 4
     renderEvalCodeList();
+    if (resultsCountText) {
+      resultsCountText.textContent = `Showing all ${allItems.length} review items`;
+    }
   }
 
   function createQuestionCard(item) {
@@ -178,33 +161,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const bulletsHtml = item.bullets.map(b => `<li>${escapeHtml(b)}</li>`).join('');
     const codeHtml = item.code ? `
       <div class="code-box">
-        <button class="copy-code-btn" title="Copy code">Copy</button>
+        <button class="copy-code-btn">Copy</button>
         <pre><code>${escapeHtml(item.code)}</code></pre>
       </div>
     ` : '';
 
     card.innerHTML = `
       <div class="q-header">
-        <div class="q-title-wrap">
-          <span class="q-topic-badge">${item.topic}</span>
+        <div>
+          <span class="q-topic-label">${item.topic}</span>
           <div class="q-text">${escapeHtml(item.q)}</div>
         </div>
-        <div class="q-hint">
-          <span>Tap/Click</span>
-          <span class="q-expand-icon">▼</span>
-        </div>
+        <span class="q-action-hint">Expand</span>
       </div>
       <div class="q-drawer">
-        <div class="answer-lead">💡 Cram Answer:</div>
-        <div style="font-size:0.92rem; color:var(--text-main); margin-bottom:10px;">${escapeHtml(item.short)}</div>
+        <div class="answer-summary">${escapeHtml(item.short)}</div>
         <ul class="bullets-list">${bulletsHtml}</ul>
         ${codeHtml}
       </div>
     `;
 
-    // Click / Enter toggle drawer
     card.addEventListener('click', (e) => {
-      // Don't toggle if clicking copy button
       if (e.target.classList.contains('copy-code-btn')) return;
       card.classList.toggle('is-open');
     });
@@ -216,18 +193,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Copy button
     const copyBtn = card.querySelector('.copy-code-btn');
     if (copyBtn) {
       copyBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         navigator.clipboard.writeText(item.code);
-        copyBtn.textContent = 'Copied!';
+        copyBtn.textContent = 'Copied';
         setTimeout(() => copyBtn.textContent = 'Copy', 1500);
       });
     }
 
-    // Attach smooth cursor follower listeners
+    // Smooth hover follower
     card.addEventListener('mouseenter', (e) => onCardMouseEnter(e, item));
     card.addEventListener('mouseleave', onCardMouseLeave);
     card.addEventListener('mousemove', onCardMouseMove);
@@ -247,9 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // =========================================================================
   // Smooth Cursor Tooltip Follower
-  // =========================================================================
   let isMouseOverCard = false;
   let targetX = 0;
   let targetY = 0;
@@ -258,13 +232,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let animationFrameId = null;
 
   function onCardMouseEnter(e, item) {
-    // Disable on coarse pointer (touch / mobile) or if user turned tooltips off
     if (window.matchMedia('(pointer: coarse)').matches || !tooltipsEnabled) {
       return;
     }
 
     isMouseOverCard = true;
-    ttBadge.textContent = `${item.section.toUpperCase()} • ${item.topic}`;
+    ttTopic.textContent = `${item.section.toUpperCase()} - ${item.topic}`;
     ttShort.textContent = item.short;
 
     if (item.code) {
@@ -274,8 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ttCode.style.display = 'none';
     }
 
-    targetX = e.clientX + 18;
-    targetY = e.clientY + 18;
+    targetX = e.clientX + 16;
+    targetY = e.clientY + 16;
     currentX = targetX;
     currentY = targetY;
 
@@ -289,8 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function onCardMouseMove(e) {
     if (!isMouseOverCard || !tooltipsEnabled) return;
-    targetX = e.clientX + 18;
-    targetY = e.clientY + 18;
+    targetX = e.clientX + 16;
+    targetY = e.clientY + 16;
   }
 
   function onCardMouseLeave() {
@@ -309,9 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function smoothFollowLoop() {
     if (!isMouseOverCard) return;
 
-    // Smooth lerp interpolation for natural, non-jittery motion
-    currentX += (targetX - currentX) * 0.35;
-    currentY += (targetY - currentY) * 0.35;
+    currentX += (targetX - currentX) * 0.4;
+    currentY += (targetY - currentY) * 0.4;
 
     positionTooltip(currentX, currentY);
     animationFrameId = requestAnimationFrame(smoothFollowLoop);
@@ -320,37 +292,30 @@ document.addEventListener('DOMContentLoaded', () => {
   function positionTooltip(x, y) {
     const ttRect = cursorTooltip.getBoundingClientRect();
     const width = ttRect.width || 380;
-    const height = ttRect.height || 180;
+    const height = ttRect.height || 160;
     const padding = 16;
 
     let posX = x;
     let posY = y;
 
-    // Boundary check right edge
     if (posX + width > window.innerWidth - padding) {
-      posX = x - width - 36;
+      posX = x - width - 32;
     }
-
-    // Boundary check bottom edge
     if (posY + height > window.innerHeight - padding) {
-      posY = y - height - 36;
+      posY = y - height - 32;
     }
-
-    // Ensure within left and top bounds
     if (posX < padding) posX = padding;
     if (posY < padding) posY = padding;
 
     cursorTooltip.style.transform = `translate3d(${Math.round(posX)}px, ${Math.round(posY)}px, 0)`;
   }
 
-  // Toggle tooltips button
   btnToggleTooltips.addEventListener('click', () => {
     tooltipsEnabled = !tooltipsEnabled;
-    btnToggleTooltips.textContent = `Hover Tooltip: ${tooltipsEnabled ? 'ON' : 'OFF'}`;
+    btnToggleTooltips.textContent = `Tooltip: ${tooltipsEnabled ? 'ON' : 'OFF'}`;
     if (!tooltipsEnabled) hideTooltip();
   });
 
-  // Expand / Collapse All
   btnExpandAll.addEventListener('click', () => {
     document.querySelectorAll('.q-card').forEach(c => c.classList.add('is-open'));
   });
@@ -359,9 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.q-card').forEach(c => c.classList.remove('is-open'));
   });
 
-  // =========================================================================
-  // Search & Filter
-  // =========================================================================
+  // Search
   globalSearch.addEventListener('input', handleSearch);
   searchClear.addEventListener('click', () => {
     globalSearch.value = '';
@@ -388,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isMatch) {
           secMatches++;
           matchCount++;
-          if (query) card.classList.add('is-open'); // Auto-expand when searching
+          if (query) card.classList.add('is-open');
         }
       });
 
@@ -396,13 +359,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     resultsCountText.textContent = query
-      ? `Found ${matchCount} matching topics`
+      ? `Found ${matchCount} matching items`
       : `Showing all ${allItems.length} review items`;
   }
 
-  // =========================================================================
-  // Flashcards Logic
-  // =========================================================================
+  // Flashcards
   const cardScene = document.getElementById('card-scene');
   const cardInner = document.getElementById('card-inner');
   const cardFrontBadge = document.getElementById('card-front-badge');
@@ -428,15 +389,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDeckFilters();
     updateFlashcard();
 
-    // Flip triggers
     cardScene.addEventListener('click', flipCard);
     btnFlipCard.addEventListener('click', flipCard);
 
-    // Prev / Next
     btnPrevCard.addEventListener('click', () => stepCard(-1));
     btnNextCard.addEventListener('click', () => stepCard(1));
 
-    // Shuffle
     btnShuffleDeck.addEventListener('click', () => {
       shuffleArray(flashcardList);
       currentCardIndex = 0;
@@ -445,7 +403,6 @@ document.addEventListener('DOMContentLoaded', () => {
       updateFlashcard();
     });
 
-    // Mastery markings
     btnMarkMastered.addEventListener('click', () => {
       const current = flashcardList[currentCardIndex];
       if (current) {
@@ -464,10 +421,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Keyboard Shortcuts
     document.addEventListener('keydown', (e) => {
       if (currentTab !== 'tab-flashcards') return;
-      // Ignore if user typing in an input
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
 
       if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
@@ -490,13 +445,13 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: '7a', label: '7a Strings' },
       { id: '7b', label: '7b Unicode' },
       { id: '7c', label: '7c Encoding' },
-      { id: '7d', label: '7d Endian' },
+      { id: '7d', label: '7d Endianness' },
       { id: '7e', label: '7e Format' },
       { id: '7f', label: '7f Regex' },
       { id: '8a', label: '8a Files' },
       { id: '8b', label: '8b Binary' },
       { id: '8c', label: '8c CSV/JSON' },
-      { id: 'needs_review', label: '⚠️ Review List' }
+      { id: 'needs_review', label: 'Review List' }
     ];
 
     filters.forEach(f => {
@@ -513,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (f.id === 'needs_review') {
           flashcardList = allItems.filter(item => cardMastery[item.id] === 'review');
           if (flashcardList.length === 0) {
-            alert('No cards marked for review yet! Mark cards using the "⚠️ Need Review" button.');
+            alert('No cards marked for review yet. Use "Mark for Review" to add cards.');
             flashcardList = [...allItems];
             currentFilter = 'all';
             document.querySelector('.deck-filter-btn').classList.add('active');
@@ -549,17 +504,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateFlashcard() {
     if (flashcardList.length === 0) {
-      cardFrontText.textContent = 'No cards available in this filter.';
+      cardFrontText.textContent = 'No cards available.';
       cardIndexIndicator.textContent = '0 of 0';
       deckProgressBar.style.width = '0%';
       return;
     }
 
     const item = flashcardList[currentCardIndex];
-    cardFrontBadge.textContent = `${item.section.toUpperCase()} • ${item.topic}`;
+    cardFrontBadge.textContent = `${item.section.toUpperCase()} - ${item.topic}`;
     cardFrontText.textContent = item.q;
 
-    cardBackBadge.textContent = `${item.section.toUpperCase()} • ANSWER`;
+    cardBackBadge.textContent = `${item.section.toUpperCase()} - ANSWER`;
     cardBackLead.textContent = item.short;
 
     cardBackBullets.innerHTML = item.bullets.map(b => `<li>${escapeHtml(b)}</li>`).join('');
@@ -584,9 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cardMasteryIndicator.textContent = `Mastered: ${masteredCount} | Review: ${reviewCount}`;
   }
 
-  // =========================================================================
-  // Quiz Logic
-  // =========================================================================
+  // Quiz
   const quizListEl = document.getElementById('quiz-questions-list');
   const quizScoreBadge = document.getElementById('quiz-score-badge');
   const btnRestartQuiz = document.getElementById('btn-restart-quiz');
@@ -628,18 +581,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return `
               <button class="quiz-opt-btn ${stateClass}" data-q="${idx}" data-opt="${optIdx}" ${hasAnswered ? 'disabled' : ''}>
-                <span style="font-weight:700; color:var(--text-dim);">${String.fromCharCode(65 + optIdx)}.</span>
+                <span style="color:var(--text-dim);">${String.fromCharCode(65 + optIdx)}.</span>
                 <span>${escapeHtml(opt)}</span>
               </button>
             `;
           }).join('')}
         </div>
         <div class="quiz-explain ${hasAnswered ? 'is-visible' : ''}">
-          <strong>💡 Rule / Explanation:</strong> ${escapeHtml(qItem.explain)}
+          <strong>Explanation:</strong> ${escapeHtml(qItem.explain)}
         </div>
       `;
 
-      // Option click
       const optionButtons = qCard.querySelectorAll('.quiz-opt-btn');
       optionButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -656,9 +608,6 @@ document.addEventListener('DOMContentLoaded', () => {
     quizScoreBadge.textContent = `Score: ${correctCount} / ${answeredCount} (${percent}%)`;
   }
 
-  // =========================================================================
-  // Utilities
-  // =========================================================================
   function escapeHtml(str) {
     if (!str) return '';
     return str
@@ -676,7 +625,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Initialize all components
   renderLearnSections();
   initFlashcards();
   initQuiz();
