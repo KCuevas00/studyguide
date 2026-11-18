@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Exam #2 Study Guide & Cram Sheet (Python 3.13)</title>
+  <meta name="description" content="Concise, high-yield Python 3.13 study guide for Exam 2: Strings, Unicode, Encoding, Endianness, Formatting, Regex, File I/O, Binary I/O, CSV, and JSON.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Floating Cursor Tooltip (Smooth Follower) -->
+  <div id="cursor-tooltip" class="cursor-tooltip" aria-hidden="true">
+    <div class="tooltip-badge" id="tt-badge">TOPIC</div>
+    <div class="tooltip-short" id="tt-short">Explanation</div>
+    <pre class="tooltip-code" id="tt-code" style="display:none;"></pre>
+    <span class="tooltip-hint" id="tt-hint">Click / Tap to pin answer</span>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="container">
+      <div class="header-top">
+        <div class="title-area">
+          <h1>
+            <span>Python Exam #2 Study Guide</span>
+            <span class="cram-pill">Python 3.13 Cram</span>
+          </h1>
+          <p class="subtitle">Focus: Conceptual questions, code evaluation, and short programs. No fluff.</p>
+        </div>
+        <div class="header-actions">
+          <button id="theme-toggle" class="btn-icon" title="Toggle Light/Dark Theme">
+            <span id="theme-icon">☀️</span>
+            <span id="theme-text">Light</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Search -->
+      <div class="search-bar-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search" class="search-input" placeholder="Search any topic, function, or keyword (e.g. BOM, split, ord, utf8, readline)...">
+        <button id="search-clear" class="search-clear" title="Clear search">×</button>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <nav class="tabs-nav" role="tablist">
+        <button class="tab-btn active" data-tab="tab-learn" role="tab" aria-selected="true">
+          <span>📖 Learn</span>
+          <span class="tab-badge" id="learn-count">38</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-flashcards" role="tab" aria-selected="false">
+          <span>🗂️ Flashcards</span>
+          <span class="tab-badge" id="card-count">38</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-quiz" role="tab" aria-selected="false">
+          <span>✍️ Quiz</span>
+          <span class="tab-badge" id="quiz-count">17</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-sample" role="tab" aria-selected="false">
+          <span>💻 Sample Code & Lab</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="container">
+
+    <!-- ====================================================================
+         TAB 1: LEARN (Word doc styled with cursor-hover & tap-to-expand)
+         ==================================================================== -->
+    <section id="tab-learn" class="tab-panel active" role="tabpanel">
+      
+      <!-- Section Quick Jump Nav -->
+      <div class="section-nav" id="section-nav">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Controls Row -->
+      <div class="view-controls">
+        <span id="results-count-text">Showing all 38 review items</span>
+        <div class="control-btn-group">
+          <button id="btn-expand-all" class="btn-subtle">Expand All</button>
+          <button id="btn-collapse-all" class="btn-subtle">Collapse All</button>
+          <button id="btn-toggle-tooltips" class="btn-subtle">Hover Tooltip: ON</button>
+        </div>
+      </div>
+
+      <!-- Container where all sections and questions are rendered -->
+      <div id="learn-content-container">
+        <!-- Rendered via study-data.js & app.js -->
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 2: FLASHCARDS
+         ==================================================================== -->
+    <section id="tab-flashcards" class="tab-panel" role="tabpanel">
+      <div class="flashcards-container">
+        
+        <!-- Filter Bar -->
+        <div class="deck-filter-bar" id="deck-filter-bar">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Deck Progress & Counter -->
+        <div class="deck-status">
+          <span id="card-index-indicator">Card 1 of 38</span>
+          <span id="card-mastery-indicator">Mastered: 0 | Review: 0</span>
+        </div>
+        <div class="deck-progress-bar-wrap">
+          <div id="deck-progress-bar" class="deck-progress-bar"></div>
+        </div>
+
+        <!-- 3D Card Scene -->
+        <div class="card-scene" id="card-scene" tabindex="0" role="button" aria-label="Flashcard. Click or press space to flip.">
+          <div class="flashcard-inner" id="card-inner">
+            
+            <!-- Front Face -->
+            <div class="card-face card-front">
+              <div class="card-badge" id="card-front-badge">7a. Strings</div>
+              <div class="card-body-text" id="card-front-text">Question goes here...</div>
+              <div class="card-instruction">👆 Click, tap, or press Spacebar to flip</div>
+            </div>
+
+            <!-- Back Face -->
+            <div class="card-face card-back">
+              <div>
+                <div class="card-badge" id="card-back-badge">Answer</div>
+                <div class="card-answer-lead" id="card-back-lead">Answer Lead</div>
+                <ul class="card-answer-bullets" id="card-back-bullets"></ul>
+              </div>
+              <div class="code-box" id="card-back-code-wrap" style="display:none;">
+                <code id="card-back-code"></code>
+              </div>
+              <div class="card-instruction">👆 Click, tap, or press Spacebar to flip back</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="card-controls">
+          <button id="btn-prev-card" class="btn-deck" title="Previous Card (Left Arrow)">← Prev</button>
+          <button id="btn-flip-card" class="btn-deck" title="Flip Card (Spacebar)">🔄 Flip</button>
+          <button id="btn-next-card" class="btn-deck" title="Next Card (Right Arrow)">Next →</button>
+          <button id="btn-shuffle-deck" class="btn-deck" title="Shuffle Deck">🔀 Shuffle</button>
+        </div>
+
+        <!-- Self-rating Actions -->
+        <div class="deck-score-actions">
+          <button id="btn-mark-review" class="btn-review-again">⚠️ Need Review</button>
+          <button id="btn-mark-mastered" class="btn-mastered">✅ Got It (Mastered)</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 3: QUIZ
+         ==================================================================== -->
+    <section id="tab-quiz" class="tab-panel" role="tabpanel">
+      <div class="quiz-container">
+        
+        <div class="quiz-header-bar">
+          <div>
+            <strong>Python Exam #2 Practice Drill</strong>
+            <div style="font-size:0.8rem; color:var(--text-dim);">17 high-yield questions directly from the review sheet</div>
+          </div>
+          <div class="quiz-score-badge" id="quiz-score-badge">Score: 0 / 0</div>
+          <button id="btn-restart-quiz" class="btn-subtle">🔄 Reset Quiz</button>
+        </div>
+
+        <div id="quiz-questions-list">
+          <!-- Rendered via JS -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 4: SAMPLE CODE & LAB
+         ==================================================================== -->
+    <section id="tab-sample" class="tab-panel" role="tabpanel">
+      <div class="lab-container">
+        
+        <!-- Lab 1: Sample Program To Write -->
+        <div class="lab-card">
+          <h2>📝 Sample Program to Write (File I/O + Regex)</h2>
+          <div class="lab-meta">
+            <span class="lab-badge">Python 3.13</span>
+            <span class="lab-badge">Context Manager</span>
+            <span class="lab-badge">Regex</span>
+          </div>
+          <p class="lab-description">
+            <strong>Problem Statement from Review Sheet:</strong><br>
+            Write a program that reads a file using <code>for x in file</code> and a context manager (<code>with...</code>) that does the following:
+            <br>1. Prints the number of lines in the file.
+            <br>2. Prints the number of empty lines, i.e., lines that contain no characters other than the end-of-line marker (<code>\n</code>).
+            <br>3. Prints the number of characters in the file, again not counting the end-of-line markers.
+            <br>4. Uses a regex to count or print the lines that contain a specific string or pattern.
+          </p>
+
+          <div class="code-box">
+            <button class="copy-code-btn" onclick="navigator.clipboard.writeText(document.getElementById('code-sample-prog').innerText)">Copy</button>
+            <pre id="code-sample-prog"><code>import re
+
+# Target pattern to search for in lines
+pattern = re.compile(r'python', re.IGNORECASE)
+
+total_lines = 0
+empty_lines = 0
+total_chars = 0
+matching_lines = 0
+
+filename = 'files-many.txt'
+
+with open(filename, 'r', encoding='utf-8') as f:
+    for line in f:
+        total_lines += 1
+        
+        # 1. Check if empty line (only newline character)
+        if line == '\n' or line == '\r\n':
+            empty_lines += 1
+            
+        # 2. Count characters without end-of-line markers
+        stripped = line.rstrip('\r\n')
+        total_chars += len(stripped)
+        
+        # 3. Check regex match on line
+        if pattern.search(line):
+            matching_lines += 1
+
+print(f"Total lines: {total_lines}")
+print(f"Empty lines: {empty_lines}")
+print(f"Total characters (not counting \\n): {total_chars}")
+print(f"Matching lines: {matching_lines}")</code></pre>
+          </div>
+
+          <div class="lab-output-box">
+            <span class="output-title">Professor's Test Case Verification (~t90rkf1/d503/dio/files-many.txt):</span>
+            <div>Total lines: 3</div>
+            <div>Empty lines: 1</div>
+            <div>Total characters (not counting \n): 30</div>
+            <div style="color:#94a3b8; font-size: 0.78rem; margin-top: 6px;">
+              Verification check: 30 characters + 3 newline bytes = 33 bytes total file length on Linux.
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Code Evaluation Drills -->
+        <div class="lab-card">
+          <h2>🔍 Code to Evaluate (Key Exam Traps)</h2>
+          <p class="lab-description">
+            High-frequency code snippets testing: regex, <code>split()</code>, <code>join()</code>, <code>format()</code>, <code>ord()</code>, <code>chr()</code>, and string functions.
+          </p>
+
+          <div class="question-list" id="eval-code-list">
+            <!-- Dynamically populated from eval_drills -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer container">
+    <p>Python Exam #2 Review Guide • Python 3.13 • Clean Cram Mode</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="study-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
