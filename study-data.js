@@ -884,191 +884,849 @@ print(f"Lines matching pattern: {matching_lines}")`
   // Quiz questions for cram self-testing
   quizQuestions: [
     {
-      q: "In Python 3.13, what is the type of a single character 'a'?",
+      id: "q-7a-1",
+      section: "7a",
+      q: "In Python 3.13, how is a single character like \"a\" represented in memory?",
       options: [
-        "char",
-        "character",
-        "str of length 1",
-        "byte"
+        "As a distinct primitive \"char\" type (like in C or Java)",
+        "As a standard \"str\" object with len(s) == 1",
+        "As a single 8-bit unsigned integer",
+        "As an ASCII character pointer",
       ],
-      answer: 2,
-      explain: "Python has no separate 'char' type. A single character is simply a str with len(s) == 1."
+      answer: 1,
+      explain: "Python has no separate \"char\" type. A single character is simply a string object (str) of length 1 (type(\"a\") is <class \"str\">, len(\"a\") == 1)."
     },
     {
-      q: "Given s = 'abc', what happens if you execute s[1] = 'd'?",
+      id: "q-7a-2",
+      section: "7a",
+      q: "Given s = \"abc\", what happens if you execute s[1] = \"d\", and why?",
       options: [
-        "s becomes 'adc'",
+        "s becomes \"adc\"",
         "TypeError is raised because strings are immutable",
-        "ValueError is raised",
-        "s becomes 'adbc'"
+        "ValueError is raised because strings cannot change length",
+        "s becomes \"adbc\"",
       ],
       answer: 1,
-      explain: "Strings in Python are immutable; modifying an index in place raises TypeError. You must create a new string: s[:1] + 'd' + s[2:]."
+      explain: "Strings in Python are immutable. Attempting to assign to an item index raises TypeError. To change the value, construct a new string: s = s[:1] + \"d\" + s[2:]."
     },
     {
-      q: "What does '  cat   dog  '.split() return?",
+      id: "q-7a-3",
+      section: "7a",
+      q: "What does \"  cat   dog  \".split() return compared to \"  cat   dog  \".split(\" \")?",
       options: [
-        "['', '', 'cat', '', '', 'dog', '', '']",
-        "['cat', 'dog']",
-        "['  cat', 'dog  ']",
-        "['cat   dog']"
+        "Both return [\"cat\", \"dog\"]",
+        ".split() returns [\"cat\", \"dog\"]; .split(\" \") preserves consecutive spaces as empty strings [\"\"]",
+        ".split() raises ValueError on consecutive whitespace",
+        ".split(\" \") returns [\"cat\", \"dog\"] and .split() preserves spaces",
       ],
       answer: 1,
-      explain: "s.split() with no argument treats consecutive whitespace as a single delimiter and strips leading/trailing empty strings."
+      explain: "With no arguments, s.split() groups contiguous whitespace together and strips leading and trailing whitespace, returning [\"cat\", \"dog\"]. In contrast, s.split(\" \") uses a single space as an exact delimiter, producing multiple empty string elements (\"\") for consecutive spaces."
     },
     {
+      id: "q-7a-4",
+      section: "7a",
       q: "Which expression evaluates to True when comparing strings in Python?",
       options: [
-        "'zebra' < 'Apple'",
-        "'Apple' < 'apple'",
-        "'apple' < 'Apple'",
-        "'banana' < 'apple'"
+        "\"zebra\" < \"Apple\"",
+        "\"Apple\" < \"apple\"",
+        "\"apple\" < \"Apple\"",
+        "\"banana\" < \"apple\"",
       ],
       answer: 1,
-      explain: "Python compares Unicode code points (ord()). Uppercase 'A' (65) is less than lowercase 'a' (97), so 'Apple' < 'apple' is True."
+      explain: "Python compares strings lexicographically by their Unicode code points using ord(). In Unicode/ASCII, uppercase letters come before lowercase letters: ord(\"A\") is 65, while ord(\"a\") is 97. Thus \"Apple\" < \"apple\" is True."
     },
     {
-      q: "How many total code points exist in the Unicode standard?",
+      id: "q-7a-5",
+      section: "7a",
+      q: "What does \"banana\".find(\"z\") return, and how does it differ from \"banana\".index(\"z\")?",
       options: [
-        "65,536",
-        "128",
-        "1,114,112",
-        "256"
+        "Both raise ValueError",
+        ".find(\"z\") returns -1, while .index(\"z\") raises ValueError",
+        ".find(\"z\") returns None, while .index(\"z\") returns -1",
+        "Both return -1",
       ],
-      answer: 2,
-      explain: "Unicode defines 1,114,112 code points (U+0000 to U+10FFFF). 65,536 is the number of code points in the BMP (Plane 0)."
+      answer: 1,
+      explain: "s.find(sub) returns -1 if the substring is not found, making it safe for conditionals without try/except. In contrast, s.index(sub) raises a ValueError when the substring is missing."
     },
     {
-      q: "What does ord('A') and chr(66) return respectively?",
+      id: "q-7a-6",
+      section: "7a",
+      q: "Given s = \"Python\", what do s[1:4] and s[::-1] evaluate to?",
       options: [
-        "65 and 'B'",
-        "'A' and 66",
-        "0x41 and 'A'",
-        "97 and 'b'"
+        "\"yth\" and \"nohtyP\"",
+        "\"pyt\" and \"Python\"",
+        "\"ytho\" and \"nohtyP\"",
+        "\"yth\" and an IndexError",
       ],
       answer: 0,
-      explain: "ord('A') returns integer code point 65. chr(66) returns the character 'B'."
+      explain: "Slice s[1:4] takes indices 1, 2, and 3 (\"yth\"). The slice s[::-1] with a step of -1 traverses from right to left, reversing the string to \"nohtyP\". Slicing never raises IndexError on out-of-bounds indices."
     },
     {
+      id: "q-7a-7",
+      section: "7a",
+      q: "How can you validate that a string s consists entirely of digits before attempting to convert it with int(s)?",
+      options: [
+        "s.isalpha()",
+        "s.isdigit()",
+        "type(s) == int",
+        "s.has_digits()",
+      ],
+      answer: 1,
+      explain: "s.isdigit() returns True if all characters in the string are digits (0-9) and the string contains at least one character. This prevents ValueError when subsequently calling int(s)."
+    },
+    {
+      id: "q-7a-8",
+      section: "7a",
+      q: "What happens when evaluating \"-\".join([\"apple\", 42, \"banana\"])?",
+      options: [
+        "\"apple-42-banana\"",
+        "TypeError: sequence item 1: expected str instance, int found",
+        "[\"apple\", \"-\", \"42\", \"-\", \"banana\"]",
+        "\"apple-None-banana\"",
+      ],
+      answer: 1,
+      explain: "str.join() requires every element of the iterable to be an instance of str. It does not automatically cast non-string objects like integers to strings; passing an int raises TypeError."
+    },
+    {
+      id: "q-7b-1",
+      section: "7b",
+      q: "How many total code points exist in the Unicode standard, and what is the valid code point range?",
+      options: [
+        "65,536 (U+0000 to U+FFFF)",
+        "128 (U+0000 to U+007F)",
+        "1,114,112 (U+0000 to U+10FFFF)",
+        "2,097,152 (U+0000 to U+1FFFFF)",
+      ],
+      answer: 2,
+      explain: "Unicode defines exactly 1,114,112 code points spanning 17 planes of 65,536 code points each (17 \u00d7 65,536 = 1,114,112), ranging from U+0000 to U+10FFFF."
+    },
+    {
+      id: "q-7b-2",
+      section: "7b",
+      q: "What is the Basic Multilingual Plane (BMP), and how many code points does it contain?",
+      options: [
+        "Plane 1 containing 128 ASCII characters",
+        "Plane 0 containing 65,536 code points (U+0000 to U+FFFF)",
+        "All 17 planes combined (1,114,112 code points)",
+        "The UTF-8 header block containing 256 code points",
+      ],
+      answer: 1,
+      explain: "Plane 0 is designated as the Basic Multilingual Plane (BMP). It covers code points U+0000 through U+FFFF (2^16 = 65,536 code points) and contains characters for nearly all modern languages and common symbols."
+    },
+    {
+      id: "q-7b-3",
+      section: "7b",
+      q: "The character \"A\" has Unicode code point U+0041. Is \"0041\" decimal or hexadecimal, and what is its decimal value?",
+      options: [
+        "Decimal; value is 41",
+        "Hexadecimal; decimal value is 65 (4 \u00d7 16 + 1)",
+        "Octal; decimal value is 33",
+        "Binary; decimal value is 41",
+      ],
+      answer: 1,
+      explain: "Values following \"U+\" in Unicode notation are always in hexadecimal. 0x0041 in base 10 is 4 \u00d7 16^1 + 1 \u00d7 16^0 = 64 + 1 = 65."
+    },
+    {
+      id: "q-7b-4",
+      section: "7b",
+      q: "Which Python string escape sequences represent the character \"A\" (code point U+0041)?",
+      options: [
+        "\"\\x41\", \"\\u0041\", and \"\\U00000041\"",
+        "\"\\c41\" and \"\\d65\"",
+        "\"\\u41\" and \"\\U41\"",
+        "\"U+0041\" only",
+      ],
+      answer: 0,
+      explain: "Python supports \\xhh (2 hex digits), \\uhhhh (4 hex digits), and \\Uhhhhhhhh (8 hex digits). All three escape sequences (\"\\x41\", \"\\u0041\", \"\\U00000041\") evaluate to \"A\"."
+    },
+    {
+      id: "q-7b-5",
+      section: "7b",
+      q: "What does ord(\"A\") and chr(66) return respectively in Python 3?",
+      options: [
+        "65 and \"B\"",
+        "\"A\" and 66",
+        "0x41 and \"A\"",
+        "97 and \"b\"",
+      ],
+      answer: 0,
+      explain: "ord(\"A\") takes a 1-character string and returns its integer Unicode code point 65. chr(66) takes an integer and returns the corresponding 1-character string \"B\"."
+    },
+    {
+      id: "q-7b-6",
+      section: "7b",
+      q: "Which identity is always True for any legal single Unicode character c in Python?",
+      options: [
+        "ord(chr(c)) == c",
+        "chr(ord(c)) == c",
+        "ord(c) == hex(c)",
+        "len(chr(ord(c))) == 2",
+      ],
+      answer: 1,
+      explain: "ord(c) maps character -> integer code point, and chr(i) maps integer code point -> character. Therefore chr(ord(c)) == c is an exact inverse identity."
+    },
+    {
+      id: "q-7c-1",
+      section: "7c",
+      q: "What is the fundamental difference between Unicode and UTF-8?",
+      options: [
+        "Unicode is an encoding; UTF-8 is a character set",
+        "Unicode assigns abstract numbers (code points) to characters; UTF-8 specifies how those numbers are stored as a sequence of bytes",
+        "Unicode is limited to English; UTF-8 is multilingual",
+        "Unicode uses 8 bits; UTF-8 uses 32 bits",
+      ],
+      answer: 1,
+      explain: "Unicode is the universal character set that assigns abstract numeric identifiers (code points) to characters. UTF-8 (Unicode Transformation Format 8-bit) is a byte serialization format that encodes those numbers into 1 to 4 bytes."
+    },
+    {
+      id: "q-7c-2",
+      section: "7c",
       q: "Do all characters in the BMP (Basic Multilingual Plane) have the same byte length in UTF-8?",
       options: [
         "Yes, they all use exactly 2 bytes",
         "Yes, they all use exactly 3 bytes",
         "No, BMP characters take 1, 2, or 3 bytes in UTF-8",
-        "No, they take 1 or 4 bytes"
+        "No, BMP characters take 1 or 4 bytes",
       ],
       answer: 2,
-      explain: "In UTF-8, ASCII (0-127) takes 1 byte, 128-2047 takes 2 bytes, and 2048-65535 takes 3 bytes. All are in the BMP."
+      explain: "In UTF-8, ASCII characters (0-127) take 1 byte, code points 128-2047 take 2 bytes, and code points 2048-65535 take 3 bytes. All of these code points reside within the BMP (Plane 0)."
     },
     {
-      q: "Why is there no such thing as an official 'extended ASCII standard'?",
+      id: "q-7c-3",
+      section: "7c",
+      q: "Which Unicode code points match the standard 7-bit ASCII character set exactly?",
       options: [
-        "ASCII was limited to 6 bits",
-        "Multiple incompatible proprietary/regional 8-bit standards (ISO-8859, CP1252, OEM) were developed",
-        "Unicode made ASCII illegal",
-        "Extended ASCII only works on Windows"
+        "U+0000 to U+007F (0 to 127)",
+        "U+0000 to U+00FF (0 to 255)",
+        "U+0080 to U+00FF (128 to 255)",
+        "U+0001 to U+0020 (1 to 32)",
+      ],
+      answer: 0,
+      explain: "Code points 0 through 127 (U+0000 to U+007F) correspond one-to-one with 7-bit ASCII. In UTF-8, these are encoded as identical single bytes (0x00 to 0x7F)."
+    },
+    {
+      id: "q-7c-4",
+      section: "7c",
+      q: "How can you tell if an individual byte contains a legal 7-bit ASCII character?",
+      options: [
+        "The byte value is between 128 and 255",
+        "The highest bit (most significant bit, MSB) is 0 (byte value < 128)",
+        "The byte ends with bit 1",
+        "The byte is an even integer",
       ],
       answer: 1,
-      explain: "No single standard exists because multiple competing 8-bit encodings each mapped codes 128-255 differently."
+      explain: "7-bit ASCII characters span values 0 to 127 (0x00 to 0x7F). In an 8-bit byte, the eighth bit (most significant bit, MSB) is always 0 (b & 0x80 == 0)."
     },
     {
-      q: "If a UTF-8 file contains a leading byte order mark (BOM), how should you open it in Python to automatically strip the BOM?",
+      id: "q-7c-5",
+      section: "7c",
+      q: "Why is there no such thing as an official \"extended ASCII standard\"?",
       options: [
-        "open(fn, encoding='utf-8')",
-        "open(fn, encoding='utf-8-sig')",
-        "open(fn, encoding='utf-8-bom')",
-        "open(fn, mode='rb-sig')"
+        "ASCII was strictly limited to 6 bits by law",
+        "Multiple incompatible 8-bit standards (ISO-8859 variants, Windows CP1252, OEM 437) each mapped codes 128-255 differently",
+        "Computers could only process 7 bits until Unicode was invented",
+        "ASCII does not permit numeric digits",
       ],
       answer: 1,
-      explain: "encoding='utf-8-sig' automatically identifies and strips the 3 BOM signature bytes (EF BB BF) on read."
+      explain: "When 8-bit bytes became standard, different manufacturers and regional bodies assigned characters 128-255 differently for local alphabets. No single universal standard was ever adopted for \"extended ASCII\"."
     },
     {
-      q: "What happens if format() has FEWER variables than format items: '{0} {1}'.format('cat')?",
+      id: "q-7c-6",
+      section: "7c",
+      q: "What is the relationship between ISO-8859-1 (Latin-1) and the first 256 code points (0-255) of Unicode?",
+      options: [
+        "They are completely incompatible",
+        "The first 256 Unicode code points (U+0000 to U+00FF) were intentionally defined to match ISO-8859-1 character values identically",
+        "ISO-8859-1 characters are mapped to the last 256 code points of Unicode",
+        "Unicode shifted ISO-8859-1 characters by +128 slots",
+      ],
+      answer: 1,
+      explain: "To provide direct backwards compatibility, the Unicode consortium defined code points U+0000 through U+00FF to match ISO-8859-1 one-for-one."
+    },
+    {
+      id: "q-7c-7",
+      section: "7c",
+      q: "What is the primary difference between ISO-8859-1 and Windows CP1252?",
+      options: [
+        "CP1252 is 16-bit while ISO-8859-1 is 8-bit",
+        "CP1252 assigns printable characters (such as \u20ac, curly quotes, and dashes) to byte positions 0x80-0x9F, which are unused control codes in ISO-8859-1",
+        "ISO-8859-1 includes Cyrillic letters while CP1252 is purely Greek",
+        "CP1252 does not contain ASCII characters 0-127",
+      ],
+      answer: 1,
+      explain: "In ISO-8859-1, bytes 0x80 to 0x9F are reserved for C1 control codes. Windows-1252 replaced these control codes with common printable symbols like the Euro (\u20ac), trademark (\u2122), and typographical quotes."
+    },
+    {
+      id: "q-7c-8",
+      section: "7c",
+      q: "How many bytes does each character use in ASCII, ISO-8859-1, and UTF-8 respectively?",
+      options: [
+        "ASCII: 1 byte; ISO-8859-1: 1 byte; UTF-8: 1 to 4 bytes",
+        "ASCII: 7 bytes; ISO-8859-1: 8 bytes; UTF-8: 16 bytes",
+        "ASCII: 1 byte; ISO-8859-1: 2 bytes; UTF-8: 4 bytes",
+        "ASCII: 1 byte; ISO-8859-1: 1 byte; UTF-8: always 2 bytes",
+      ],
+      answer: 0,
+      explain: "ASCII uses 1 byte (7 bits used). ISO-8859-1 is a fixed 1-byte (8-bit) encoding. UTF-8 is a variable-length encoding using 1, 2, 3, or 4 bytes per character."
+    },
+    {
+      id: "q-7d-1",
+      section: "7d",
+      q: "What is byte serialization (endianness)?",
+      options: [
+        "Converting strings to lowercase bytes",
+        "The order in which the individual bytes of a multi-byte quantity are arranged in memory or on disk",
+        "Encrypting byte streams using public key cryptography",
+        "Compressing text files with gzip",
+      ],
+      answer: 1,
+      explain: "Endianness refers to the sequence in which bytes of multi-byte numbers (e.g., 16-bit or 32-bit values) are ordered: Big-Endian puts the most significant byte first, while Little-Endian puts the least significant byte first."
+    },
+    {
+      id: "q-7d-2",
+      section: "7d",
+      q: "For a 16-bit integer with hex value 0x1234, how is it stored in Big-Endian vs Little-Endian byte order?",
+      options: [
+        "Big-Endian: 0x12 then 0x34; Little-Endian: 0x34 then 0x12",
+        "Big-Endian: 0x34 then 0x12; Little-Endian: 0x12 then 0x34",
+        "Both store 0x12 then 0x34",
+        "Big-Endian uses 4 bytes; Little-Endian uses 2 bytes",
+      ],
+      answer: 0,
+      explain: "Big-Endian places the most significant byte (0x12) at the lowest memory address (first). Little-Endian places the least significant byte (0x34) first."
+    },
+    {
+      id: "q-7d-3",
+      section: "7d",
+      q: "Why does UTF-8 NOT require a Byte Order Mark (BOM) to indicate endianness?",
+      options: [
+        "UTF-8 only supports 7-bit characters",
+        "UTF-8 encodes text as a sequence of single 8-bit byte units whose internal byte order is fixed by specification",
+        "Modern CPUs automatically reverse UTF-8 bytes",
+        "UTF-8 is always Big-Endian 32-bit",
+      ],
+      answer: 1,
+      explain: "In UTF-8, characters are represented as a predetermined sequence of 1-byte units. Because the basic unit is 1 byte, there is no multi-byte reordering within a unit; endianness is irrelevant."
+    },
+    {
+      id: "q-7d-4",
+      section: "7d",
+      q: "In a UTF-16 encoded file, what byte sequences mark Big-Endian and Little-Endian BOMs (U+FEFF)?",
+      options: [
+        "UTF-16BE: 0xFE 0xFF; UTF-16LE: 0xFF 0xFE",
+        "UTF-16BE: 0xFF 0xFE; UTF-16LE: 0xFE 0xFF",
+        "UTF-16BE: 0x00 0x16; UTF-16LE: 0x16 0x00",
+        "UTF-16BE: 0xEF 0xBB; UTF-16LE: 0xBF 0x00",
+      ],
+      answer: 0,
+      explain: "The Unicode BOM character is U+FEFF. In Big-Endian UTF-16, the bytes appear as FE FF. In Little-Endian UTF-16, the bytes appear as FF FE."
+    },
+    {
+      id: "q-7d-5",
+      section: "7d",
+      q: "Why is the 3-byte sequence EF BB BF added by some software (like Windows Notepad) to UTF-8 files not a true BOM, and what problems can it cause?",
+      options: [
+        "It converts the text to binary executable code",
+        "UTF-8 has no byte order to mark; the 3 signature bytes can cause parsers, compilers, and Unix scripts to crash or misinterpret leading characters",
+        "It corrupts the hard drive file allocation table",
+        "It reduces text quality by dropping accents",
+      ],
+      answer: 1,
+      explain: "Because UTF-8 has no byte order, EF BB BF is merely an encoding signature. Programs expecting pure UTF-8 or ASCII see EF BB BF as illegal syntax or unexpected characters (e.g. breaking #! shebang lines in Unix scripts)."
+    },
+    {
+      id: "q-7d-6",
+      section: "7d",
+      q: "If a UTF-8 file contains a leading byte order mark (EF BB BF), how should you open it in Python to automatically strip the BOM?",
+      options: [
+        "open(fn, encoding=\"utf-8\")",
+        "open(fn, encoding=\"utf-8-sig\")",
+        "open(fn, encoding=\"utf-8-bom\")",
+        "open(fn, mode=\"rb-sig\")",
+      ],
+      answer: 1,
+      explain: "Python provides the \"utf-8-sig\" codec specifically to detect and strip the 3 BOM signature bytes (EF BB BF) on read, without exposing U+FEFF in your string."
+    },
+    {
+      id: "q-7e-1",
+      section: "7e",
+      q: "What happens if format() has FEWER variables than format items: \"{0} {1}\".format(\"cat\")?",
       options: [
         "IndexError is raised",
         "ValueError is raised",
         "The missing item prints as None",
-        "The missing item prints as empty string"
+        "The missing item prints as empty string",
       ],
       answer: 0,
-      explain: "Having fewer variables than replacement fields raises an IndexError (Replacement index 1 out of range)."
+      explain: "Having fewer positional arguments than indexed replacement fields raises IndexError: Replacement index 1 out of range."
     },
     {
-      q: "What are the default alignments for integers and strings when using format specifiers?",
+      id: "q-7e-2",
+      section: "7e",
+      q: "What happens if format() has MORE variables than format items: \"{0}\".format(\"cat\", \"dog\")?",
       options: [
-        "Both default to left-justified",
-        "Both default to right-justified",
-        "Integers default to right-justified; strings default to left-justified",
-        "Integers default to left-justified; strings default to right-justified"
+        "IndexError is raised",
+        "\"cat\" is returned and extra variables are safely ignored",
+        "ValueError is raised",
+        "\"cat dog\" is returned",
+      ],
+      answer: 1,
+      explain: "Supplying more arguments than required format items does not cause an error in Python. The extra variables are simply ignored."
+    },
+    {
+      id: "q-7e-3",
+      section: "7e",
+      q: "What are the default alignments for numbers (integers, floats) and strings when using format specifiers with a field width?",
+      options: [
+        "Both default to left-justified (<)",
+        "Both default to right-justified (>)",
+        "Numbers default to right-justified (>); strings default to left-justified (<)",
+        "Numbers default to left-justified (<); strings default to right-justified (>)",
       ],
       answer: 2,
-      explain: "Numbers (int, float) default to right-justified in their field width; strings default to left-justified."
+      explain: "By default, numbers (int, float) right-justify in their field width to align decimal places vertically, while strings left-justify."
     },
     {
-      q: "What does re.match(r'\\d+', 'cat 123') return?",
+      id: "q-7e-4",
+      section: "7e",
+      q: "Given val = 12.3456, what does f\"{val:.2f}\" produce, and are floating-point numbers rounded or truncated for printing?",
       options: [
-        "'123'",
-        "A Match object with group() == '123'",
-        "None",
-        "['123']"
+        "\"12.34\"; floats are truncated",
+        "\"12.35\"; floats are rounded",
+        "\"12.3456\"; floats are unmodified",
+        "\"12.30\"; floats are zero-padded",
       ],
-      answer: 2,
-      explain: "re.match() checks ONLY from the beginning of the string. Since 'cat 123' starts with letters, it returns None. (re.search() would find '123')."
+      answer: 1,
+      explain: "Python format specifiers ROUND floating-point values to the specified decimal precision. 12.3456 with .2f rounds up to \"12.35\"."
     },
     {
-      q: "Why are raw strings (r'...') recommended when writing regular expressions in Python?",
+      id: "q-7e-5",
+      section: "7e",
+      q: "Which expression prints integer x right-justified in a 10-column field?",
+      options: [
+        "f\"{x:>10d}\" or f\"{x:10d}\"",
+        "f\"{x:<10d}\"",
+        "f\"{x:^10d}\"",
+        "f\"{x:10s}\"",
+      ],
+      answer: 0,
+      explain: "For integers, right-justification is the default, so both f\"{x:10d}\" and f\"{x:>10d}\" right-justify in a 10-character field."
+    },
+    {
+      id: "q-7e-6",
+      section: "7e",
+      q: "What does the format specifier \":c\" do when applied to an integer?",
+      options: [
+        "Formats the integer as currency",
+        "Converts the integer code point to its corresponding Unicode character",
+        "Calculates the bitwise complement of the integer",
+        "Formats the number as a C-style pointer",
+      ],
+      answer: 1,
+      explain: "The \":c\" specifier treats the integer as a Unicode code point and formats it as the corresponding character (similar to calling chr(n)). For example, f\"{65:c}\" produces \"A\"."
+    },
+    {
+      id: "q-7e-7",
+      section: "7e",
+      q: "How can you prevent print() from adding a newline at the end and prevent spaces between printed arguments?",
+      options: [
+        "print(a, b, sep=\"\", end=\"\")",
+        "print(a + b, newline=False)",
+        "print(a, b, space=0, nl=0)",
+        "print.raw(a, b)",
+      ],
+      answer: 0,
+      explain: "In print(), sep=\"\" removes the default space delimiter between items, and end=\"\" replaces the default trailing newline (\"\n\") with an empty string."
+    },
+    {
+      id: "q-7e-8",
+      section: "7e",
+      q: "What does \"-42\".zfill(5) return, and how does it handle the negative sign?",
+      options: [
+        "\"00-42\"",
+        "\"-0042\"",
+        "\"-4200\"",
+        "ValueError",
+      ],
+      answer: 1,
+      explain: "zfill() pads numeric strings with leading zeros up to the specified width, correctly retaining the leading sign (\"+\" or \"-\") before the zeros."
+    },
+    {
+      id: "q-7f-1",
+      section: "7f",
+      q: "What does re.match(r\"\\d+\", \"cat 123\") return vs re.search(r\"\\d+\", \"cat 123\")?",
+      options: [
+        "re.match returns None; re.search returns a Match object with group() == \"123\"",
+        "Both return a Match object with group() == \"123\"",
+        "Both return None",
+        "re.match returns \"123\"; re.search returns None",
+      ],
+      answer: 0,
+      explain: "re.match() matches ONLY from the start of the string (index 0). Since \"cat 123\" starts with letters, re.match() returns None. re.search() scans through the string and finds \"123\"."
+    },
+    {
+      id: "q-7f-2",
+      section: "7f",
+      q: "Why are raw strings (r\"...\") recommended when writing regular expressions in Python?",
       options: [
         "They run 2x faster than regular strings",
-        "They prevent backslashes from being treated as Python escape characters",
+        "They prevent backslashes from being treated as Python string escape characters",
         "They automatically compile the regex pattern",
-        "They allow case-insensitive matching by default"
+        "They allow case-insensitive matching by default",
       ],
       answer: 1,
-      explain: "In raw strings, backslashes are treated literally, so you write r'\\d+' instead of '\\\\\\\\d+'."
+      explain: "In raw strings, backslashes are treated literally. Without raw strings, matching a literal backslash requires \"\\\\\". With raw strings, you write r\"\\\" (and r\"\\d\" instead of \"\\d\")."
     },
     {
+      id: "q-7f-3",
+      section: "7f",
+      q: "What does re.findall(r\"[a-z]+\", \"Cat 123 DOG and fish\") return?",
+      options: [
+        "[\"at\", \"and\", \"fish\"]",
+        "[\"Cat\", \"DOG\", \"and\", \"fish\"]",
+        "A Match object",
+        "\"at and fish\"",
+      ],
+      answer: 0,
+      explain: "re.findall() returns a list of all non-overlapping matches as strings. [a-z]+ matches only lowercase ASCII letters: in \"Cat\" it matches \"at\", then \"and\", then \"fish\"."
+    },
+    {
+      id: "q-7f-4",
+      section: "7f",
+      q: "What is the difference between regex quantifiers \"*\" and \"+\"?",
+      options: [
+        "\"*\" matches 0 or more occurrences; \"+\" matches 1 or more occurrences",
+        "\"*\" matches exactly 1; \"+\" matches multiple",
+        "\"+\" matches 0 or more; \"*\" matches 1 or more",
+        "\"*\" matches letters; \"+\" matches digits",
+      ],
+      answer: 0,
+      explain: "In regular expressions, \"*\" means zero or more repetitions of the preceding element, while \"+\" requires at least one repetition."
+    },
+    {
+      id: "q-7f-5",
+      section: "7f",
+      q: "What does the regular expression pattern r\"^\\d+$\" match?",
+      options: [
+        "Any string containing at least one digit",
+        "A string that consists entirely of one or more digits from start to end",
+        "Any string that starts with a digit",
+        "Any string that ends with a digit",
+      ],
+      answer: 1,
+      explain: "\"^\" anchors at the start of the string and \"$\" anchors at the end. Together with \"\\d+\", the string must contain only digits from beginning to end with no other characters."
+    },
+    {
+      id: "q-7f-6",
+      section: "7f",
+      q: "Given m = re.search(r\"(\\w+): (\\d+)\", \"Score: 95\"), what do m.group(0) and m.group(2) return?",
+      options: [
+        "\"Score: 95\" and \"95\"",
+        "\"Score\" and \"95\"",
+        "\"95\" and \"Score\"",
+        "IndexError",
+      ],
+      answer: 0,
+      explain: "m.group(0) (or m.group()) returns the entire matched substring (\"Score: 95\"). m.group(1) is the first parenthesized capture group (\"Score\"), and m.group(2) is the second capture group (\"95\")."
+    },
+    {
+      id: "q-7f-7",
+      section: "7f",
+      q: "When should you use re.compile(pattern)?",
+      options: [
+        "Only when the pattern contains numbers",
+        "When the same regular expression is used repeatedly in loops or multiple searches to avoid re-compiling overhead",
+        "When matching Unicode characters",
+        "To convert a regex into a SQL query",
+      ],
+      answer: 1,
+      explain: "re.compile() parses and compiles the pattern into a regex Pattern object once, which improves performance when searching or matching in loops."
+    },
+    {
+      id: "q-7f-8",
+      section: "7f",
+      q: "What does re.sub(r\"\\s+\", \"-\", \"apple   banana  orange\") return?",
+      options: [
+        "\"apple---banana--orange\"",
+        "\"apple-banana-orange\"",
+        "[\"apple\", \"banana\", \"orange\"]",
+        "\"apple banana orange\"",
+      ],
+      answer: 1,
+      explain: "re.sub(pattern, replacement, string) replaces all occurrences of pattern. Since \"\\s+\" matches contiguous blocks of whitespace as single matches, each block of spaces is replaced by a single \"-\", producing \"apple-banana-orange\"."
+    },
+    {
+      id: "q-8a-1",
+      section: "8a",
       q: "When reading a file with f.readline(), how do you know you have reached the end of the file (EOF)?",
       options: [
-        "It returns '\\n'",
-        "It returns '' (empty string of length 0)",
+        "It returns \"\n\"",
+        "It returns \"\" (empty string of length 0)",
         "It raises an EOFError exception",
-        "It returns None"
+        "It returns None",
       ],
       answer: 1,
-      explain: "f.readline() returns '' at EOF. An empty line returns '\\n' (length 1), NOT ''."
+      explain: "f.readline() returns an empty string \"\" (len == 0) at EOF. An empty line in the file returns \"\n\" (length 1), NOT \"\"."
     },
     {
-      q: "What is the key advantage of using 'with open(filename) as f:'?",
+      id: "q-8a-2",
+      section: "8a",
+      q: "How do Unix and Windows mark line endings, and how does Python text mode handle them by default?",
+      options: [
+        "Unix uses LF (\"\n\"), Windows uses CRLF (\"\r\n\"); Python's universal newline mode translates CRLF to \"\n\" on read",
+        "Unix uses CRLF, Windows uses LF; Python leaves them unchanged",
+        "Both use CR (\"\r\"); Python converts them to \"\u0000\"",
+        "Unix uses EOF; Windows uses \"\n\"",
+      ],
+      answer: 0,
+      explain: "Unix uses LF (\n, byte 0x0A). Windows uses CRLF (\r\n, bytes 0x0D 0x0A). Python's universal newlines feature automatically translates \r\n to \n when reading in text mode."
+    },
+    {
+      id: "q-8a-3",
+      section: "8a",
+      q: "What are the default mode and access type if you call open(\"file.txt\") with no additional arguments?",
+      options: [
+        "mode=\"w\" and binary (\"wb\")",
+        "mode=\"r\" and text (\"rt\")",
+        "mode=\"a\" and text (\"at\")",
+        "mode=\"r+\" and binary (\"rb+\")",
+      ],
+      answer: 1,
+      explain: "open() defaults to read mode (\"r\") and text mode (\"t\"). Calling open(\"file.txt\") is equivalent to open(\"file.txt\", \"rt\")."
+    },
+    {
+      id: "q-8a-4",
+      section: "8a",
+      q: "What is the key advantage of using \"with open(filename) as f:\"?",
       options: [
         "It automatically parses the file into JSON",
         "It guarantees the file is properly closed when exiting the block, even on exceptions",
         "It loads the entire file into RAM faster",
-        "It prevents file permission errors"
+        "It prevents file permission errors",
       ],
       answer: 1,
-      explain: "The context manager guarantees file closure upon block exit, preventing file descriptor leaks even if errors occur."
+      explain: "The context manager guarantees file closure upon block exit, preventing file descriptor leaks even if unhandled exceptions occur."
     },
     {
-      q: "In a JSON file, what data type must all dictionary keys be?",
+      id: "q-8a-5",
+      section: "8a",
+      q: "When reading a file using \"for line in f:\", what does each line variable contain?",
       options: [
-        "Integer",
-        "String (in double quotes)",
+        "Only the text content, with the newline automatically stripped",
+        "The text content along with the trailing newline \"\n\" (unless the last line lacks one)",
+        "A list of words on the line",
+        "A tuple of (line_number, line_text)",
+      ],
+      answer: 1,
+      explain: "Iterating line-by-line over a file object preserves the trailing newline character \"\n\". To remove it, use line.rstrip(\"\n\") or line.strip()."
+    },
+    {
+      id: "q-8a-6",
+      section: "8a",
+      q: "What data structure does f.readlines() return?",
+      options: [
+        "A single string containing the entire file",
+        "A list of strings, where each element is a line including its trailing \"\n\"",
+        "A generator yielding lines",
+        "A dictionary of lines indexed by line number",
+      ],
+      answer: 1,
+      explain: "f.readlines() reads all lines into memory and returns a list of strings, with each line retaining its trailing \"\n\"."
+    },
+    {
+      id: "q-8a-7",
+      section: "8a",
+      q: "How does f.write(s) differ from print(s, file=f)?",
+      options: [
+        "f.write() automatically appends a newline; print() does not",
+        "f.write() does NOT append a newline and requires a string; print() appends a newline by default and converts arguments to strings",
+        "f.write() writes binary data; print() writes text data",
+        "f.write() only accepts integers",
+      ],
+      answer: 1,
+      explain: "f.write() takes exactly one string and does not append a newline. print(*args, file=f) converts arguments to str, separates them with sep (\" \"), and appends end (\"\n\")."
+    },
+    {
+      id: "q-8a-8",
+      section: "8a",
+      q: "In a loop \"for line in f:\", which condition correctly tests if a line is an empty line (containing only the newline)?",
+      options: [
+        "line == \"\"",
+        "line == \"\n\"",
+        "line is None",
+        "len(line) == 0",
+      ],
+      answer: 1,
+      explain: "When iterating over a file, an empty line consists solely of the newline character \"\n\" (len(line) == 1). A string of length 0 (line == \"\") indicates EOF in readline(), but never appears in for line in f."
+    },
+    {
+      id: "q-8b-1",
+      section: "8b",
+      q: "How do you open a file for reading in binary mode in Python?",
+      options: [
+        "open(filename, \"r\", binary=True)",
+        "open(filename, \"rb\")",
+        "open(filename, \"b\")",
+        "open.binary(filename)",
+      ],
+      answer: 1,
+      explain: "Appending \"b\" to the mode string (e.g. \"rb\" for read binary, \"wb\" for write binary) opens the file in binary mode, returning bytes objects instead of str."
+    },
+    {
+      id: "q-8b-2",
+      section: "8b",
+      q: "Why does Python need to know whether a file is opened in text mode or binary mode?",
+      options: [
+        "Binary mode runs on a secondary CPU thread",
+        "Text mode automatically performs character decoding and newline translation (\r\n <-> \n); doing this on binary files would corrupt binary data",
+        "Binary mode limits file size to 2 GB",
+        "Text mode cannot handle numbers",
+      ],
+      answer: 1,
+      explain: "In text mode, Python translates newlines and decodes bytes into str. If applied to binary data (like an image or audio file), changing 0x0D 0x0A or attempting character decoding would corrupt the data."
+    },
+    {
+      id: "q-8b-3",
+      section: "8b",
+      q: "Which module and functions convert between raw byte strings and Python tuples of native types (integers, floats)?",
+      options: [
+        "struct.unpack() (bytes to tuple) and struct.pack() (tuple to bytes)",
+        "json.loads() and json.dumps()",
+        "bytes.to_tuple() and tuple.to_bytes()",
+        "pickle.unflatten() and pickle.flatten()",
+      ],
+      answer: 0,
+      explain: "Python's standard \"struct\" module performs conversions between Python values and C structs represented as Python bytes: struct.unpack() reads bytes into a tuple, and struct.pack() packs values into bytes."
+    },
+    {
+      id: "q-8b-4",
+      section: "8b",
+      q: "Why is endianness critical when reading multi-byte binary numbers from a file?",
+      options: [
+        "Endianness determines if the file is compressed",
+        "The byte order changes the numerical value entirely: reading 0x00000001 as Little-Endian yields 16,777,216 instead of 1",
+        "Endianness is only relevant for text files",
+        "Little-Endian numbers cannot be negative",
+      ],
+      answer: 1,
+      explain: "Multi-byte values depend on whether the most significant byte comes first (Big-Endian) or last (Little-Endian). Reading binary data with the wrong endianness completely corrupts numeric values."
+    },
+    {
+      id: "q-8b-5",
+      section: "8b",
+      q: "How do you convert a bytes object b = b\"hello\" into a str in Python?",
+      options: [
+        "b.decode(\"utf-8\")",
+        "b.encode(\"utf-8\")",
+        "str(b)",
+        "b.to_str()",
+      ],
+      answer: 0,
+      explain: "Use bytes.decode(encoding) to decode raw bytes into a Unicode string. (Note: str(b) produces the literal representation \"b'hello'\", which is not the string \"hello\")."
+    },
+    {
+      id: "q-8b-6",
+      section: "8b",
+      q: "Why must you know the encoding when converting raw bytes to characters?",
+      options: [
+        "Because raw bytes contain no metadata indicating which character set created them, and the same byte value represents different characters in different encodings",
+        "Because all Python encodings require 16 bits",
+        "Because UTF-8 cannot decode English letters",
+        "Because binary files always encrypt characters",
+      ],
+      answer: 0,
+      explain: "A byte sequence is just numbers from 0 to 255. Without an encoding specification (like UTF-8 or Latin-1), there is no way to determine which characters those numbers represent."
+    },
+    {
+      id: "q-8c-1",
+      section: "8c",
+      q: "What is a CSV file, and are column header rows required in CSV files?",
+      options: [
+        "CSV stands for Comma-Separated Values; header rows are optional",
+        "CSV stands for Compiled Standard Variables; headers are mandatory on row 1",
+        "CSV is a binary database format; headers are forbidden",
+        "CSV files must contain XML metadata",
+      ],
+      answer: 0,
+      explain: "CSV stands for Comma-Separated Values. It is a plain-text tabular format. Header rows are optional; some files start directly with data."
+    },
+    {
+      id: "q-8c-2",
+      section: "8c",
+      q: "When reading fields from a CSV file using Python's csv module, what is the default data type of every field?",
+      options: [
+        "String (str)",
+        "Integer (int)",
+        "Float (float)",
+        "Auto-detected by value",
+      ],
+      answer: 0,
+      explain: "CSV is a plain text format without type annotations. By default, every field is read as a string (str), and numeric fields must be explicitly cast using int() or float()."
+    },
+    {
+      id: "q-8c-3",
+      section: "8c",
+      q: "In a CSV file, how can a field containing a comma (e.g. \"Smith, John\") be correctly represented?",
+      options: [
+        "Enclosing the field in double quotes or using an alternate delimiter like tab or semicolon",
+        "Replacing commas with hyphens or deleting them",
+        "Commas are illegal in CSV data under all circumstances",
+        "Encoding the field in hexadecimal",
+      ],
+      answer: 0,
+      explain: "CSV standard conventions allow commas inside fields by enclosing the entire field in double quotes (e.g. \"Smith, John\"), or by configuring an alternate delimiter like tab (TSV)."
+    },
+    {
+      id: "q-8c-4",
+      section: "8c",
+      q: "In standard JSON, what data type must ALL object (dictionary) keys be?",
+      options: [
+        "String (enclosed in double quotes)",
         "Any hashable Python object",
-        "Symbol"
+        "Integer",
+        "Symbol",
       ],
-      answer: 1,
-      explain: "In standard JSON, all keys MUST be strings enclosed in double quotes."
+      answer: 0,
+      explain: "The JSON specification strictly requires all object keys to be strings enclosed in double quotes. In Python, if a dictionary has integer keys, json.dump() converts them to strings."
     },
     {
-      q: "What does json.dump(data, f, sort_keys=True) do?",
+      id: "q-8c-5",
+      section: "8c",
+      q: "How does JSON differentiate between a string value and a numeric value?",
       options: [
-        "Sorts the file lines numerically",
-        "Sorts the dictionary keys alphabetically in the serialized output",
+        "Strings are enclosed in double quotes (e.g. \"123\"); numbers are unquoted (e.g. 123)",
+        "Strings use single quotes; numbers use double quotes",
+        "Numbers are prefixed with #",
+        "JSON cannot distinguish numbers from strings",
+      ],
+      answer: 0,
+      explain: "In JSON, double quotes denote string literals (\"42\"), whereas numeric literals appear without quotes (42 or 3.14)."
+    },
+    {
+      id: "q-8c-6",
+      section: "8c",
+      q: "What is the difference between json.dump() and json.load() in Python?",
+      options: [
+        "json.dump() writes Python data to a file stream; json.load() reads and parses JSON from a file stream",
+        "json.dump() deletes JSON files; json.load() creates them",
+        "json.dump() works on strings; json.load() works on binary files",
+        "Both functions are identical",
+      ],
+      answer: 0,
+      explain: "json.dump(obj, fp) serializes an object to a file stream. json.load(fp) deserializes JSON from a file stream into Python data structures. (Contrast with json.dumps() and json.loads(), which operate on in-memory strings)."
+    },
+    {
+      id: "q-8c-7",
+      section: "8c",
+      q: "What does passing sort_keys=True to json.dump(data, f, sort_keys=True) do, and why is it useful?",
+      options: [
+        "Sorts the file lines in reverse order",
+        "Sorts dictionary keys alphabetically in the output, producing deterministic JSON ideal for diffs and testing",
         "Deletes unsorted dictionary keys",
-        "Loads sorted JSON from file f"
+        "Sorts list elements numerically",
       ],
       answer: 1,
-      explain: "sort_keys=True sorts dictionary keys alphabetically, producing deterministic output useful for diffing."
+      explain: "sort_keys=True forces dictionary keys to be serialized in alphabetical order. This guarantees deterministic, reproducible JSON output, making file comparisons and git diffs clean."
     }
   ]
 };

@@ -681,6 +681,60 @@ body {
   color: var(--text-main);
 }
 
+.quiz-filter-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.quiz-filter-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  font-family: var(--font-sans);
+}
+
+.quiz-filter-btn:hover, .quiz-filter-btn.active {
+  background: var(--bg-card);
+  color: var(--text-main);
+  border-color: var(--border-medium);
+  font-weight: 500;
+}
+
+.quiz-sec-badge {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.sec-quiz-jump-btn {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.sec-quiz-jump-btn:hover {
+  color: var(--text-main);
+  border-color: var(--border-medium);
+  background: var(--bg-card);
+}
+
 .quiz-card {
   border: 1px solid var(--border-light);
   background: var(--bg-card);

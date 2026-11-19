@@ -133,11 +133,16 @@
         
         <div class="quiz-header-bar">
           <div>
-            <strong>Practice Quiz</strong>
-            <div style="font-size:0.78rem; color:var(--text-dim);">17 questions based directly on the review sheet</div>
+            <strong id="quiz-title">Practice Quiz</strong>
+            <div id="quiz-subtitle" style="font-size:0.78rem; color:var(--text-dim);">65 questions based directly on the review sheet</div>
           </div>
           <div class="quiz-score-badge" id="quiz-score-badge">Score: 0 / 0</div>
-          <button id="btn-restart-quiz" class="btn-subtle">Reset</button>
+          <button id="btn-restart-quiz" class="btn-subtle">Reset Quiz</button>
+        </div>
+
+        <!-- Section Quiz Filter Bar -->
+        <div class="deck-filter-bar quiz-filter-bar" id="quiz-filter-bar">
+          <!-- Rendered via JS -->
         </div>
 
         <div id="quiz-questions-list">

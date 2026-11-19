@@ -27,9 +27,11 @@ Designed for rapid 2-day exam cramming with clean controls, no distractions, smo
   - Shuffle mode.
 
 - **✍️ Quiz Tab**:
-  - 17 targeted multiple-choice questions derived directly from tricky exam questions and rules.
-  - Instant green/red feedback with concise explanations of Python 3.13 behavior.
-  - Live score percentage counter and quiz reset button.
+  - **Quizzes for Each Section**: Dedicated quizzes for every section (**7a Strings**, **7b Unicode**, **7c Encoding**, **7d Endianness**, **7e Format**, **7f Regex**, **8a Files & I/O**, **8b Binary I/O**, and **8c CSV & JSON**) plus an **All Sections** comprehensive exam mode.
+  - **65 Targeted Multiple-Choice Questions**: Expanded from 17 to 65 deep questions derived directly from the review sheet and Python 3.13 nuances.
+  - **Instant Feedback & In-Depth Explanations**: Immediate green/red visual states with clear explanations of exact Python 3.13 behavior.
+  - **Per-Section Progress & Scoring**: Track live scores and accuracy percentages independently per section or across the entire course.
+  - **Quick Quiz Launch**: "Take Quiz" buttons in the Learn tab let you jump directly into that section's quiz after reading.
 
 - **💻 Sample Code & Lab Tab**:
   - **Sample Program**: Full, clean Python 3.13 solution using `with open(...)` and regex to count total lines, empty lines, characters (without EOL markers), and regex pattern matches.

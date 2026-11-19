@@ -9,6 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
   let cardFlipped = false;
   let cardMastery = {};
   let quizAnswers = {};
+  let currentQuizSection = 'all';
+
+  const QUIZ_SECTIONS = [
+    { id: 'all', label: 'All Sections' },
+    { id: '7a', label: '7a Strings' },
+    { id: '7b', label: '7b Unicode' },
+    { id: '7c', label: '7c Encoding' },
+    { id: '7d', label: '7d Endianness' },
+    { id: '7e', label: '7e Format' },
+    { id: '7f', label: '7f Regex' },
+    { id: '8a', label: '8a Files' },
+    { id: '8b', label: '8b Binary' },
+    { id: '8c', label: '8c CSV/JSON' }
+  ];
   let currentFilter = 'all';
 
   // Flatten all items
@@ -130,8 +144,20 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="section-title">${sec.title}</div>
           <div class="section-desc">${sec.desc}</div>
         </div>
-        <span class="section-count">${sec.items.length} items</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="section-count">${sec.items.length} items</span>
+          ${QUIZ_SECTIONS.some(qs => qs.id === sec.id) ? `<button class="sec-quiz-jump-btn" data-sec="${sec.id}" title="Practice quiz for this section">Take Quiz</button>` : ''}
+        </div>
       `;
+      const quizJumpBtn = headerEl.querySelector('.sec-quiz-jump-btn');
+      if (quizJumpBtn) {
+        quizJumpBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          switchTab('tab-quiz');
+          setQuizSection(sec.id);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
       sectionEl.appendChild(headerEl);
 
       const qListEl = document.createElement('div');
@@ -543,34 +569,101 @@ document.addEventListener('DOMContentLoaded', () => {
   const quizListEl = document.getElementById('quiz-questions-list');
   const quizScoreBadge = document.getElementById('quiz-score-badge');
   const btnRestartQuiz = document.getElementById('btn-restart-quiz');
+  const quizFilterBar = document.getElementById('quiz-filter-bar');
+  const quizTitle = document.getElementById('quiz-title');
+  const quizSubtitle = document.getElementById('quiz-subtitle');
 
   function initQuiz() {
+    renderQuizFilterBar();
     renderQuiz();
-    btnRestartQuiz.addEventListener('click', () => {
-      quizAnswers = {};
-      renderQuiz();
+
+    if (btnRestartQuiz) {
+      btnRestartQuiz.addEventListener('click', () => {
+        if (currentQuizSection === 'all') {
+          quizAnswers = {};
+        } else {
+          const questionsInSec = STUDY_DATA.quizQuestions.filter(q => q.section === currentQuizSection);
+          questionsInSec.forEach(q => {
+            delete quizAnswers[q.id];
+          });
+        }
+        renderQuiz();
+      });
+    }
+  }
+
+  function setQuizSection(secId) {
+    currentQuizSection = secId;
+    renderQuizFilterBar();
+    renderQuiz();
+  }
+
+  function renderQuizFilterBar() {
+    if (!quizFilterBar) return;
+    quizFilterBar.innerHTML = '';
+
+    QUIZ_SECTIONS.forEach(sec => {
+      const btn = document.createElement('button');
+      btn.className = `quiz-filter-btn ${sec.id === currentQuizSection ? 'active' : ''}`;
+
+      const count = sec.id === 'all'
+        ? STUDY_DATA.quizQuestions.length
+        : STUDY_DATA.quizQuestions.filter(q => q.section === sec.id).length;
+
+      btn.textContent = `${sec.label} (${count})`;
+      btn.addEventListener('click', () => {
+        setQuizSection(sec.id);
+      });
+      quizFilterBar.appendChild(btn);
     });
   }
 
   function renderQuiz() {
+    if (!quizListEl) return;
     quizListEl.innerHTML = '';
+
+    const questionsToRender = currentQuizSection === 'all'
+      ? STUDY_DATA.quizQuestions
+      : STUDY_DATA.quizQuestions.filter(q => q.section === currentQuizSection);
+
     let correctCount = 0;
     let answeredCount = 0;
 
-    STUDY_DATA.quizQuestions.forEach((qItem, idx) => {
-      const qCard = document.createElement('div');
-      qCard.className = 'quiz-card';
-
-      const userAns = quizAnswers[idx];
-      const hasAnswered = userAns !== undefined;
-
-      if (hasAnswered) {
+    questionsToRender.forEach(qItem => {
+      const userAns = quizAnswers[qItem.id];
+      if (userAns !== undefined) {
         answeredCount++;
         if (userAns === qItem.answer) correctCount++;
       }
+    });
+
+    if (quizTitle && quizSubtitle) {
+      if (currentQuizSection === 'all') {
+        quizTitle.textContent = 'Practice Quiz - All Sections';
+        quizSubtitle.textContent = `${questionsToRender.length} comprehensive questions covering all exam topics (7a-7f, 8a-8c)`;
+      } else {
+        const secObj = QUIZ_SECTIONS.find(s => s.id === currentQuizSection);
+        const secData = STUDY_DATA.sections.find(s => s.id === currentQuizSection);
+        quizTitle.textContent = `${secData ? secData.title : secObj.label} Quiz`;
+        quizSubtitle.textContent = `${questionsToRender.length} questions • ${secData ? secData.desc : ''}`;
+      }
+    }
+
+    questionsToRender.forEach((qItem, idx) => {
+      const qCard = document.createElement('div');
+      qCard.className = 'quiz-card';
+
+      const userAns = quizAnswers[qItem.id];
+      const hasAnswered = userAns !== undefined;
+
+      const secData = STUDY_DATA.sections.find(s => s.id === qItem.section);
+      const secBadgeText = secData ? secData.title.split('.')[0].toUpperCase() : qItem.section.toUpperCase();
 
       qCard.innerHTML = `
-        <div class="quiz-q-num">Question ${idx + 1} of ${STUDY_DATA.quizQuestions.length}</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div class="quiz-q-num">Question ${idx + 1} of ${questionsToRender.length}</div>
+          <span class="quiz-sec-badge">${escapeHtml(secBadgeText)}</span>
+        </div>
         <div class="quiz-q-text">${escapeHtml(qItem.q)}</div>
         <div class="quiz-options">
           ${qItem.options.map((opt, optIdx) => {
@@ -580,7 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
               else if (optIdx === userAns) stateClass = 'wrong';
             }
             return `
-              <button class="quiz-opt-btn ${stateClass}" data-q="${idx}" data-opt="${optIdx}" ${hasAnswered ? 'disabled' : ''}>
+              <button class="quiz-opt-btn ${stateClass}" data-qid="${qItem.id}" data-opt="${optIdx}" ${hasAnswered ? 'disabled' : ''}>
                 <span style="color:var(--text-dim);">${String.fromCharCode(65 + optIdx)}.</span>
                 <span>${escapeHtml(opt)}</span>
               </button>
@@ -596,7 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
       optionButtons.forEach(btn => {
         btn.addEventListener('click', () => {
           const optIdx = parseInt(btn.getAttribute('data-opt'), 10);
-          quizAnswers[idx] = optIdx;
+          quizAnswers[qItem.id] = optIdx;
           renderQuiz();
         });
       });
@@ -605,7 +698,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const percent = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
-    quizScoreBadge.textContent = `Score: ${correctCount} / ${answeredCount} (${percent}%)`;
+    if (quizScoreBadge) {
+      quizScoreBadge.textContent = `Score: ${correctCount} / ${answeredCount} of ${questionsToRender.length} (${percent}%)`;
+    }
   }
 
   function escapeHtml(str) {
